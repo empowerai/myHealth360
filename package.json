@@ -17,7 +17,7 @@
     "lint:es:fix": "eslint . --fix || exit 0",
     "lint:md": "markdownlint ./README.md || exit 0",
     "docs": "jsdoc -c .jsdoc.json -d public/docs/code -t ./node_modules/ink-docstrap/template -R README.md -r .",
-    "postinstall": "npm run doc"
+    "postinstall": "npm run docs"
   },
   "repository": {
     "type": "git",
