@@ -44,7 +44,7 @@ function logging(req, message){
  * @param  {String} message - Error message to return
  * @param  {Array} errors  - Array of error objects to return
  */
-const sendError = function(req, res, code, message, errors){
+const send = function(req, res, code, message, errors){
 
 	const output = {
 		'response': {
@@ -64,4 +64,4 @@ const sendError = function(req, res, code, message, errors){
 //*******************************************************************
 // exports
 
-module.exports.sendError = sendError;
+module.exports.send = send;

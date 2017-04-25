@@ -19,7 +19,9 @@
 
 const jwt = require('jsonwebtoken');
 
-const error = require('../error.js');
+const include = require('include')(__dirname);
+
+const errors = include('src/controllers/errors.js');
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -40,7 +42,7 @@ const token = function(req, res, next){
 
 		jwt.verify(token, JWT_SECRET_KEY, function(err, decoded) {      
 			if (err) {
-				error.sendError(req, res, 401, 'Failed to authenticate token.');
+				errors.send(req, res, 401, 'Failed to authenticate token.');
 			} 
 			else {
 				req.decoded = decoded;    
@@ -50,7 +52,7 @@ const token = function(req, res, next){
 
 	} 
 	else {
-		error.sendError(req, res, 403, 'No token provided.');
+		errors.send(req, res, 403, 'No token provided.');
 	}
     
 };

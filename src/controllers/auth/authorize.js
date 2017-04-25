@@ -9,7 +9,6 @@
 
 */
 
-
 //*******************************************************************
 
 'use strict';
@@ -17,7 +16,9 @@
 //*******************************************************************
 // required modules
 
-const error = require('../error.js');
+const include = require('include')(__dirname);
+
+const errors = include('src/controllers/errors.js');
 
 //*******************************************************************
 // authorize
@@ -34,7 +35,7 @@ const authorize = function(req, res, next){
 		return next();
 	}
 	
-	error.sendError(req, res, 403, 'Forbidden.');
+	errors.send(req, res, 403, 'Forbidden.');
 };
 
 //*******************************************************************=
