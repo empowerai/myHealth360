@@ -12,3 +12,5 @@
 myHealth360 developed by [Team NCI](http://www.nciinc.com/) for the [Proving the Potential](https://www.cccinnovationcenter.com/challenges/proving-the-potential-a-health-data-and-standards-code-a-thon/): A Health Data and Standards Code-A-Thon 
 
 _April 24-25, 2017_
+
+[![myHealth360](https://myhealth360.herokuapp.com/images/myhealth360-logo_480.png)](https://myhealth360.herokuapp.com)
