@@ -16,15 +16,33 @@
 //*******************************************************************
 // required modules
 
+require('dotenv').config();
+
 const express = require('express');
 const router = express.Router();
 const path = require('path');
 const include = require('include')(__dirname);
 
-//const controller = include('src/controllers');
+const controller = include('src/controllers');
+
+const X_ACCESS_TOKEN = process.env.X_ACCESS_TOKEN;
 
 //*******************************************************************
 
+router.use('/auth/', function(req,res){
+
+	res.json({'x-access-token': X_ACCESS_TOKEN});
+});
+
+router.get('/patients/:patientID/', function(req,res){
+
+	controller.get.patients(req, res);	
+});
+
+router.get('/patients/:patientID/diagnostics/', function(req,res){
+
+	controller.get.diagnostics(req, res);	
+});
 
 //*******************************************************************
 //exports

@@ -29,11 +29,11 @@ const authorize = include('src/controllers/auth/authorize.js');
 //*******************************************************************
 // router
 
-router.use('/auth', auth);
+//router.use('/auth', auth);
 
-router.use(token);
+//router.use(token);
 
-router.use(authorize);
+//router.use(authorize);
 
 router.use('/api', api);
 
