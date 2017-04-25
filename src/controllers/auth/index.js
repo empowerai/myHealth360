@@ -16,73 +16,81 @@
 //*******************************************************************
 // required modules
 
+const express = require('express');
+const router = express.Router();
 const include = require('include')(__dirname);
 const passport = require('passport');  
-const Strategy = require('passport-local');
+const GitHubStrategy = require('passport-github2').Strategy;
 const bcrypt = require('bcrypt-nodejs');
+const models = include('src/models');
 
-const jwt = require('jsonwebtoken');
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const init = require('./init');
 
 //*******************************************************************
 // passport 
 
-passport.use(new Strategy(  
+passport.use(new GitHubStrategy({
+		clientID: process.env.GITHUB_CLIENT_ID,
+		clientSecret: process.env.GITHUB_CLIENT_SECRET,
+		callbackURL: process.env.GITHUB_CALLBACK_URL
+  },
+  function(accessToken, refreshToken, profile, done) {
 
-	function(username, password, done) {
+  	console.log('Github profile='+JSON.stringify(profile));
+
+  	var responseUser = {};
+  	responseUser.token = accessToken;
+
+    var searchQuery = {
+      name: profile.displayName
+    };
+
+    var updates = {
+      name: profile.displayName,
+      someID: profile.username
+    };
+
+    var options = {
+      upsert: true
+    };
+
+    models.users.findOne({
+		where: {id: profile.username} 
+	})
+	.then(function(user) {
+		if(user){
+			responseUser.id = user.id;
+			responseUser.healthId = user.recordId;
+			done(null, responseUser);	
+		}
+		else {
+			const dbUser = {};
+			dbUser.id = profile.username;
+			dbUser.userRole = 'patient';
+			models.users.create(dbUser)
+			.then(function(usr) {
+				responseUser.id = usr.id;
+				responseUser.heathId = usr.recordId;
+				done(null, responseUser);
+			})
+			.catch(function(err) {
+				console.error(err);
+				done(err);
+			});
+		}
 		
-	}
+	})
+	.catch(function(err) {
+		console.error(err);
+		done(err);
+	}); 
+  }
+
 ));
 
-//*******************************************************************
+// serialize user into the session
+init();
 
-/**
- * Serializes user info
- * @param  {Object}   req - Request object
- * @param  {Object}   res - Response object
- * @param  {Function} next - What to call after serializing user info
- */
-const serialize = function(req, res, next) {  
+module.exports = passport;
 
-	req.user = {
-		id: req.user.id,
-		role: req.user.role
-	};
-	next();
-};
-
-/**
- * Creates JWT to return to user
- * @param  {Object}   req - Request object
- * @param  {Object}   res - Response object
- * @param  {Function} next - What to call after creating JWT
- */
-const generate = function(req, res, next) {   
-	
-	req.token = jwt.sign({
-		id: req.user.id,
-		role: req.user.role
-	}, JWT_SECRET_KEY, { expiresIn: 120 * 60 });
-	next();
-};
-
-/**
- * Responds to user request with token
- * @param  {Object}   req - Request object
- * @param  {Object}   res - Response object
- */
-const respond = function(req, res) { 
-
-	res.status(200).json({
-		user: req.user,
-		token: req.token
-	});
-};
-
-//*******************************************************************=
-//exports
-
-module.exports.passport = passport;
-module.exports.serialize = serialize;
-module.exports.generate = generate;
-module.exports.respond = respond;

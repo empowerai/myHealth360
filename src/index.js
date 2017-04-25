@@ -26,9 +26,10 @@ const path = require('path');
 const fsr = require('file-stream-rotator');
 const mkdirp = require('mkdirp');
 const morgan = require('morgan');
+const passport = require('passport');  
 
 const bodyParser = require('body-parser');
-
+const session = require('express-session');
 const routes = require('./routes');
 
 //*******************************************************************
@@ -66,6 +67,14 @@ app.use(morgan('combined', {stream: accessLogStream}));
 //*******************************************************************
 // public 
 
+app.use(session({
+  secret: 'keyboard-cat',
+  resave: true,
+  saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(express.static('public'));
 app.use('/docs', express.static('public/api'));
 app.use('/docs/api', express.static('public/api'));
@@ -75,6 +84,7 @@ app.use('/docs/code', express.static('public/code'));
 // routes
 
 app.use('/', routes);
+
 
 //*******************************************************************
 // listen

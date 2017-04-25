@@ -16,26 +16,26 @@
 //*******************************************************************
 // required modules
 
-const express = require('express');
-const router = express.Router();
 const include = require('include')(__dirname);
+const passport = require('passport');
+const models = include('src/models');
 
-const auth = include('src/controllers/auth');
-const passport = auth.passport;
+module.exports = function() {
 
-//*******************************************************************
-// router
+  passport.serializeUser(function(user, done) {
+    done(null, user.id);
+  });
 
-router.use(passport.initialize());  
+  passport.deserializeUser(function(id, done) {
+  	models.users.findOne({
+		where: {id: id} 
+	})
+	.then(function(user) {
+		done(null, user);
+	})
+	.catch(function(err) {
+		console.error(err, null);
+	});    
+  });
 
-router.post('/', passport.authenticate(  
-    'local', {
-	session: false
-}), 
-    auth.serialize, auth.generate, auth.respond
-);
-
-//*******************************************************************
-//exports
-
-module.exports = router;
+};

@@ -20,20 +20,25 @@ const express = require('express');
 const router = express.Router();
 const include = require('include')(__dirname);
 
-const auth = require('./auth');
 const api = require('./api');
-
-const token = include('src/controllers/auth/token.js');
-const authorize = include('src/controllers/auth/authorize.js');
 
 //*******************************************************************
 // router
 
-router.use('/auth', auth);
+router.get('/login', function(req, res, next) {
+  res.send('Go back and register!');
+});
 
-router.use(token);
+var passportGithub = include('src/controllers/auth');
 
-router.use(authorize);
+router.get('/auth/github', passportGithub.authenticate('github', { scope: [ 'user:email' ] }));
+
+router.get('/auth/github/callback',
+  passportGithub.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication
+    res.json(req.user);
+});
 
 router.use('/api', api);
 
