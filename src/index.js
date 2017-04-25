@@ -66,10 +66,9 @@ app.use(morgan('combined', {stream: accessLogStream}));
 //*******************************************************************
 // public 
 
-app.use(express.static('public'));
-app.use('/docs', express.static('public/api'));
-app.use('/docs/api', express.static('public/api'));
-app.use('/docs/code', express.static('public/code'));
+app.use(express.static('public/docs/api'));
+app.use('/docs', express.static('public/docs/api'));
+app.use('/api.json', express.static('public/docs/api/api.json'));
 
 //*******************************************************************
 // routes
