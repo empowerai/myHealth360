@@ -15,7 +15,8 @@
 			"lint",
 			"test",
 			"mocks",
-            "plugins"
+            "plugins",
+            "public"
         ]
 	},
 	"plugins": ["plugins/markdown"],
