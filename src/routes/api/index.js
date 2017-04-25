@@ -29,17 +29,17 @@ const X_ACCESS_TOKEN = process.env.X_ACCESS_TOKEN;
 
 //*******************************************************************
 
-router.use('/auth/', function(req,res){
+router.use('/auth/', function(req, res){
 
 	res.json({'x-access-token': X_ACCESS_TOKEN});
 });
 
-router.get('/patients/:patientID/', function(req,res){
+router.get('/patients/:patientID/', function(req, res){
 
 	controller.get.patients(req, res);	
 });
 
-router.get('/patients/:patientID/diagnostics/', function(req,res){
+router.get('/patients/:patientID/diagnostics/', function(req, res){
 
 	controller.get.diagnostics(req, res);	
 });

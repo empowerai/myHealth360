@@ -33,7 +33,7 @@ const MED_BASE_URL = process.env.MED_BASE_URL;
 
 function validatePatientID(patientID) {
 
-	let re = /^(Patient-[0-9]{3,7})/;
+	const re = /^(Patient-[0-9]{3,7})/;
 
 	if (patientID.match(re)) {
 		return true;
@@ -45,15 +45,15 @@ function validatePatientID(patientID) {
 
 //*******************************************************************
 
-let get = {};
+const get = {};
 
 get.patients = function(req, res){
 
-	let output = {
+	const output = {
 		api: 'myHealth360 Patients'
-	}
+	};
 
-	let patientID = req.params.patientID;
+	const patientID = req.params.patientID;
 	output.patientID = patientID;
 
 	if (!validatePatientID(patientID)) {
@@ -63,7 +63,7 @@ get.patients = function(req, res){
 	}
 	else {
 
-		request(FIHR_BASE_URL +'/Patient?_id='+ patientID, function (error, response, body) {
+		request(FIHR_BASE_URL + '/Patient?_id=' + patientID, function (error, response, body) {
 			
 			if (error) {
 				errors.send(req, res, 404, 'patientID not found');
@@ -75,8 +75,7 @@ get.patients = function(req, res){
 				console.log('statusCode:', response && response.statusCode); 
 				console.log('body:', body);
 
-
-				let patientJSON = JSON.parse(body);
+				const patientJSON = JSON.parse(body);
 
 				output.success = true;
 				output.patient = patientJSON;
@@ -90,11 +89,11 @@ get.patients = function(req, res){
 
 get.diagnostics = function(req, res){
 
-	let output = {
+	const output = {
 		api: 'myHealth360 Diagnostics'
-	}
+	};
 
-	let patientID = req.params.patientID;
+	const patientID = req.params.patientID;
 	output.patientID = patientID;
 
 	if (!validatePatientID(patientID)) {
@@ -104,7 +103,7 @@ get.diagnostics = function(req, res){
 	}
 	else {
 
-		let diagnosticReportReq = FIHR_BASE_URL +'/DiagnosticReport?patient='+ patientID;
+		const diagnosticReportReq = FIHR_BASE_URL + '/DiagnosticReport?patient=' + patientID;
 		console.log('diagnosticReportReq:', diagnosticReportReq);
 
 		request(diagnosticReportReq, function (error, response, body) {
@@ -119,10 +118,10 @@ get.diagnostics = function(req, res){
 				console.log('statusCode:', response && response.statusCode); 
 				//console.log('body:', body);
 
-				let diagnosticReportJSON = JSON.parse(body);
+				const diagnosticReportJSON = JSON.parse(body);
 
 				let diagnosisSystem = _.get(diagnosticReportJSON, 'entry[0].resource.codedDiagnosis[0].coding[0].system');
-				let diagnosisCode = _.get(diagnosticReportJSON, 'entry[0].resource.codedDiagnosis[0].coding[0].code');
+				const diagnosisCode = _.get(diagnosticReportJSON, 'entry[0].resource.codedDiagnosis[0].coding[0].code');
 
 				console.log('diagnosisSystem:', diagnosisSystem);
 				console.log('diagnosisCode:', diagnosisCode);
@@ -131,7 +130,7 @@ get.diagnostics = function(req, res){
 
 					diagnosisSystem = diagnosisSystem.slice(8);
 
-					let medicalLibraryReq = MED_BASE_URL +'?mainSearchCriteria.v.cs='+ diagnosisSystem +'&mainSearchCriteria.v.c='+ diagnosisCode +'&knowledgeResponseType=application/json';
+					const medicalLibraryReq = MED_BASE_URL + '?mainSearchCriteria.v.cs=' + diagnosisSystem + '&mainSearchCriteria.v.c=' + diagnosisCode + '&knowledgeResponseType=application/json';
 					console.log('medicalLibraryReq:', medicalLibraryReq);
 
 					request(medicalLibraryReq, function (error, response, body) {
@@ -147,7 +146,7 @@ get.diagnostics = function(req, res){
 							console.log('statusCode:', response && response.statusCode); 
 							//console.log('body:', body); 
 
-							let medicalLibraryJSON = JSON.parse(body);
+							const medicalLibraryJSON = JSON.parse(body);
 
 							output.success = true;
 							output.medicalLibrary = medicalLibraryJSON;
